@@ -41,36 +41,36 @@ export const Header: React.FC<HeaderProps> = ({
         {/* User & Drone Button */}
         <button 
           onClick={onOpenProfile}
-          className={`flex items-center gap-2 bg-slate-900/90 hover:bg-slate-800/90 border border-cyan-500/30 rounded-2xl p-1.5 pr-2.5 transition active:scale-95 text-left ${profile.active_frame || ''}`}
+          className={`flex items-center gap-1.5 xs:gap-2 bg-slate-900/90 hover:bg-slate-800/90 border border-cyan-500/30 rounded-2xl p-1 xs:p-1.5 pr-2 xs:pr-2.5 transition active:scale-95 text-left shrink-0 max-w-[130px] xs:max-w-[150px] ${profile.active_frame || ''}`}
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-600 via-indigo-600 to-purple-600 flex items-center justify-center text-lg shadow-lg relative shrink-0">
+          <div className="w-7 h-7 xs:w-8 xs:h-8 rounded-xl bg-gradient-to-tr from-cyan-600 via-indigo-600 to-purple-600 flex items-center justify-center text-base xs:text-lg shadow-lg relative shrink-0">
             <span>{currentDrone.emoji}</span>
-            <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-cyan-400 text-slate-950 px-1 rounded border border-slate-900">
+            <span className="absolute -bottom-1 -right-1 text-[7px] xs:text-[8px] font-black bg-cyan-400 text-slate-950 px-1 rounded border border-slate-900">
               {profile.selected_grade}к
             </span>
           </div>
-          <div>
-            <div className="text-[11px] font-black text-cyan-200 truncate max-w-[85px]">
+          <div className="min-w-0">
+            <div className="text-[10px] xs:text-[11px] font-black text-cyan-200 truncate">
               {profile.nickname}
             </div>
-            <div className="text-[9px] font-bold text-amber-400 flex items-center gap-0.5">
+            <div className="text-[8px] xs:text-[9px] font-bold text-amber-400 flex items-center gap-0.5 truncate">
               <span>{currentTier.badge}</span>
-              <span className="truncate max-w-[75px]">{currentTier.name}</span>
+              <span className="truncate">{currentTier.name}</span>
             </div>
           </div>
         </button>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 xs:gap-1 shrink-0">
           {/* Daily Quests Button */}
           <button
             onClick={onOpenQuests}
-            className="p-2 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-400 hover:text-amber-300 active:scale-95 transition relative shadow-sm"
+            className="p-1.5 xs:p-2 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-400 hover:text-amber-300 active:scale-95 transition relative shadow-sm"
             title="Квесты Дня"
           >
-            <Target className="w-4 h-4 text-amber-400 animate-spin-slow" />
+            <Target className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-amber-400" />
             {dailyQuestsCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-slate-950 font-black text-[9px] rounded-full flex items-center justify-center ring-2 ring-slate-950">
+              <span className="absolute -top-1 -right-1 w-3.5 h-3.5 xs:w-4 xs:h-4 bg-amber-500 text-slate-950 font-black text-[8px] xs:text-[9px] rounded-full flex items-center justify-center ring-2 ring-slate-950">
                 {dailyQuestsCount}
               </span>
             )}
@@ -79,47 +79,47 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Cyber Shop Button */}
           <button
             onClick={onOpenShop}
-            className="p-2 rounded-xl bg-slate-900/90 border border-purple-500/40 text-purple-400 hover:text-purple-300 active:scale-95 transition shadow-sm"
+            className="p-1.5 xs:p-2 rounded-xl bg-slate-900/90 border border-purple-500/40 text-purple-400 hover:text-purple-300 active:scale-95 transition shadow-sm"
             title="Магазин"
           >
-            <ShoppingBag className="w-4 h-4 text-purple-400" />
+            <ShoppingBag className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-purple-400" />
           </button>
 
           {/* Duel PvP Button */}
           <button
             onClick={onOpenDuels}
-            className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/40 to-orange-600/40 hover:from-rose-600/60 border border-rose-500/50 text-rose-300 text-xs font-black transition active:scale-95 shadow-sm"
+            className="flex items-center gap-1 px-1.5 xs:px-2 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/40 to-orange-600/40 hover:from-rose-600/60 border border-rose-500/50 text-rose-300 text-xs font-black transition active:scale-95 shadow-sm"
             title="PvP Дуэли"
           >
             <Swords className="w-3.5 h-3.5 text-rose-400" />
-            <span className="hidden xs:inline">Дуэль</span>
+            <span className="hidden sm:inline">Дуэль</span>
           </button>
 
           {/* Friends Button */}
           <button
             onClick={onOpenFriends}
-            className="p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-cyan-300 active:scale-95 transition"
+            className="p-1.5 xs:p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-cyan-300 active:scale-95 transition"
             title="Друзья"
           >
-            <Users className="w-3.5 h-3.5" />
+            <Users className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
           </button>
 
           {/* Leaderboard */}
           <button 
             onClick={onOpenLeaderboard}
-            className="p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-amber-400 active:scale-95 transition"
+            className="p-1.5 xs:p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-amber-400 active:scale-95 transition"
             title="Таблица лидеров"
           >
-            <Trophy className="w-3.5 h-3.5" />
+            <Trophy className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
           </button>
 
           {/* Achievements */}
           <button 
             onClick={onOpenAchievements}
-            className="p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-cyan-400 active:scale-95 transition relative"
+            className="p-1.5 xs:p-2 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-cyan-400 active:scale-95 transition relative"
             title="Достижения"
           >
-            <Award className="w-3.5 h-3.5" />
+            <Award className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
             {profile.achievements.length > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-cyan-400 rounded-full ring-2 ring-slate-950 animate-pulse"></span>
             )}

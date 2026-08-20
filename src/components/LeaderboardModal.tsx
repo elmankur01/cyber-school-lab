@@ -138,54 +138,54 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
               <div className="flex items-end justify-center gap-2">
                 {/* 2nd Place */}
                 {top2 && (
-                  <div className="flex-1 flex flex-col items-center">
-                    <div className="text-xl mb-1 filter drop-shadow">🥈</div>
-                    <div className="w-10 h-10 rounded-2xl bg-slate-800 border-2 border-slate-400 flex items-center justify-center text-xl shadow-md">
+                  <div className="flex-1 min-w-0 flex flex-col items-center">
+                    <div className="text-lg xs:text-xl mb-0.5 filter drop-shadow">🥈</div>
+                    <div className="w-9 h-9 xs:w-10 xs:h-10 rounded-2xl bg-slate-800 border-2 border-slate-400 flex items-center justify-center text-lg xs:text-xl shadow-md">
                       {top2.avatar}
                     </div>
-                    <div className="text-[11px] font-bold text-slate-200 mt-1 truncate max-w-[80px]">
+                    <div className="text-[10px] xs:text-[11px] font-bold text-slate-200 mt-1 truncate max-w-full px-1">
                       {top2.nickname}
                     </div>
-                    <div className="text-[10px] font-bold text-slate-400">
-                      {activeTab === 'duels' ? `${top2.duelWins} побед` : `${top2.xp} XP`}
+                    <div className="text-[9px] xs:text-[10px] font-bold text-slate-400">
+                      {activeTab === 'duels' ? `${top2.duelWins} поб.` : `${top2.xp} XP`}
                     </div>
-                    <div className="w-full h-14 bg-gradient-to-t from-slate-800 to-slate-700/80 rounded-t-2xl border-t border-slate-400/50 mt-1 flex items-center justify-center font-black text-sm text-slate-300">
+                    <div className="w-full h-12 xs:h-14 bg-gradient-to-t from-slate-800 to-slate-700/80 rounded-t-2xl border-t border-slate-400/50 mt-1 flex items-center justify-center font-black text-xs xs:text-sm text-slate-300">
                       2
                     </div>
                   </div>
                 )}
 
                 {/* 1st Place (Center - Higher) */}
-                <div className="flex-1 flex flex-col items-center">
-                  <div className="text-2xl mb-1 animate-bounce">👑</div>
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 border-2 border-amber-300 flex items-center justify-center text-2xl shadow-xl glow-gold">
+                <div className="flex-1 min-w-0 flex flex-col items-center">
+                  <div className="text-xl xs:text-2xl mb-0.5 animate-bounce">👑</div>
+                  <div className="w-11 h-11 xs:w-12 xs:h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 border-2 border-amber-300 flex items-center justify-center text-xl xs:text-2xl shadow-xl glow-gold">
                     {top1.avatar}
                   </div>
-                  <div className="text-xs font-black text-amber-300 mt-1 truncate max-w-[90px]">
+                  <div className="text-[11px] xs:text-xs font-black text-amber-300 mt-1 truncate max-w-full px-1">
                     {top1.nickname}
                   </div>
-                  <div className="text-[10px] font-black text-amber-400">
-                    {activeTab === 'duels' ? `${top1.duelWins} побед` : `${top1.xp} XP`}
+                  <div className="text-[9px] xs:text-[10px] font-black text-amber-400">
+                    {activeTab === 'duels' ? `${top1.duelWins} поб.` : `${top1.xp} XP`}
                   </div>
-                  <div className="w-full h-20 bg-gradient-to-t from-amber-600/60 via-amber-500/40 to-yellow-500/50 rounded-t-2xl border-t-2 border-amber-400 mt-1 flex items-center justify-center font-black text-base text-amber-200 glow-gold">
+                  <div className="w-full h-16 xs:h-20 bg-gradient-to-t from-amber-600/60 via-amber-500/40 to-yellow-500/50 rounded-t-2xl border-t-2 border-amber-400 mt-1 flex items-center justify-center font-black text-sm xs:text-base text-amber-200 glow-gold">
                     1
                   </div>
                 </div>
 
                 {/* 3rd Place */}
                 {top3 && (
-                  <div className="flex-1 flex flex-col items-center">
-                    <div className="text-xl mb-1 filter drop-shadow">🥉</div>
-                    <div className="w-10 h-10 rounded-2xl bg-slate-800 border-2 border-amber-700 flex items-center justify-center text-xl shadow-md">
+                  <div className="flex-1 min-w-0 flex flex-col items-center">
+                    <div className="text-lg xs:text-xl mb-0.5 filter drop-shadow">🥉</div>
+                    <div className="w-9 h-9 xs:w-10 xs:h-10 rounded-2xl bg-slate-800 border-2 border-amber-700 flex items-center justify-center text-lg xs:text-xl shadow-md">
                       {top3.avatar}
                     </div>
-                    <div className="text-[11px] font-bold text-slate-200 mt-1 truncate max-w-[80px]">
+                    <div className="text-[10px] xs:text-[11px] font-bold text-slate-200 mt-1 truncate max-w-full px-1">
                       {top3.nickname}
                     </div>
-                    <div className="text-[10px] font-bold text-slate-400">
-                      {activeTab === 'duels' ? `${top3.duelWins} побед` : `${top3.xp} XP`}
+                    <div className="text-[9px] xs:text-[10px] font-bold text-slate-400">
+                      {activeTab === 'duels' ? `${top3.duelWins} поб.` : `${top3.xp} XP`}
                     </div>
-                    <div className="w-full h-10 bg-gradient-to-t from-slate-900 to-slate-800/80 rounded-t-2xl border-t border-amber-700/60 mt-1 flex items-center justify-center font-black text-xs text-amber-600">
+                    <div className="w-full h-9 xs:h-10 bg-gradient-to-t from-slate-900 to-slate-800/80 rounded-t-2xl border-t border-amber-700/60 mt-1 flex items-center justify-center font-black text-[10px] xs:text-xs text-amber-600">
                       3
                     </div>
                   </div>
