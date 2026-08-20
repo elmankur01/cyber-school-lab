@@ -135,9 +135,12 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
             <input
               type="text"
               value={profile.nickname}
-              onChange={(e) => onUpdateProfile({ nickname: e.target.value })}
+              onChange={(e) => {
+                const clean = e.target.value.replace(/[<>"'/\\{}]/g, '').slice(0, 20);
+                onUpdateProfile({ nickname: clean });
+              }}
               className="flex-1 bg-slate-900 border border-slate-700 rounded-2xl px-4 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-cyan-400"
-              maxLength={24}
+              maxLength={20}
             />
             <button
               onClick={handleRandomNickname}

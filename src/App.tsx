@@ -41,11 +41,25 @@ const DEFAULT_PROFILE: UserProfile = {
 export default function App() {
   const { triggerHaptic } = useTelegram();
 
-  // Load profile from localStorage
+  // Load profile from localStorage with schema validation
   const [profile, setProfile] = useState<UserProfile>(() => {
     try {
       const saved = localStorage.getItem('cyber_lab_profile_v2');
-      return saved ? JSON.parse(saved) : DEFAULT_PROFILE;
+      if (!saved) return DEFAULT_PROFILE;
+      const parsed = JSON.parse(saved);
+      return {
+        ...DEFAULT_PROFILE,
+        ...parsed,
+        xp: typeof parsed.xp === 'number' && !isNaN(parsed.xp) ? Math.max(0, parsed.xp) : DEFAULT_PROFILE.xp,
+        selected_grade: typeof parsed.selected_grade === 'number' ? Math.max(3, Math.min(11, parsed.selected_grade)) : DEFAULT_PROFILE.selected_grade,
+        friends: Array.isArray(parsed.friends) ? parsed.friends : DEFAULT_PROFILE.friends,
+        completed_topics: Array.isArray(parsed.completed_topics) ? parsed.completed_topics : [],
+        defeated_bosses: Array.isArray(parsed.defeated_bosses) ? parsed.defeated_bosses : [],
+        unlocked_secrets: Array.isArray(parsed.unlocked_secrets) ? parsed.unlocked_secrets : [],
+        achievements: Array.isArray(parsed.achievements) ? parsed.achievements : ['first_blood'],
+        inventory: Array.isArray(parsed.inventory) ? parsed.inventory : [],
+        streak_days: typeof parsed.streak_days === 'number' ? Math.max(1, parsed.streak_days) : 1
+      };
     } catch {
       return DEFAULT_PROFILE;
     }
@@ -55,10 +69,13 @@ export default function App() {
   const [achievements, setAchievements] = useState(() => {
     try {
       const saved = localStorage.getItem('cyber_lab_achievements_v2');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
       return INITIAL_ACHIEVEMENTS.map(a => ({
         ...a,
-        unlocked: profile.achievements.includes(a.id)
+        unlocked: Array.isArray(profile.achievements) && profile.achievements.includes(a.id)
       }));
     } catch {
       return INITIAL_ACHIEVEMENTS;

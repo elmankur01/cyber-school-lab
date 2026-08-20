@@ -32,7 +32,7 @@ export const FriendsModal: React.FC<FriendsModalProps> = ({
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanCode = friendCodeInput.trim().toUpperCase();
+    const cleanCode = friendCodeInput.trim().toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 15);
     if (!cleanCode) return;
     if (cleanCode === profile.friend_code) {
       setFeedbackMsg('Нельзя добавить свой собственный код!');
@@ -40,7 +40,7 @@ export const FriendsModal: React.FC<FriendsModalProps> = ({
     }
     onAddFriend(cleanCode);
     setFriendCodeInput('');
-    setFeedbackMsg(`Код ${cleanCode} успешно добавлен!`);
+    setFeedbackMsg(`Код #${cleanCode} успешно добавлен!`);
     setTimeout(() => setFeedbackMsg(null), 3000);
   };
 
