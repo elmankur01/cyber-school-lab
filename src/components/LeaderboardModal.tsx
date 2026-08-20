@@ -209,7 +209,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
                   <span className="w-5 text-center font-black text-xs text-slate-400">
                     {user.rank}
                   </span>
-                  <div className="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-base">
+                  <div className={`w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-base ${user.isUser ? (profile.active_frame || '') : ''}`}>
                     {user.avatar}
                   </div>
                   <div>

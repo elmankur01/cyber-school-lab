@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TopicDegree, Question } from '../types';
 import { Timer, AlertTriangle, ShieldAlert, CheckCircle2, XCircle, Trophy, ArrowRight, Flame } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -18,30 +18,37 @@ export const BossBattle: React.FC<BossBattleProps> = ({
   onDefeat,
   triggerHaptic
 }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(90);
+  const [timeLeft, setTimeLeft] = useState<number>(bossDegree.questions[0]?.time_limit_seconds || 75);
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState<boolean>(false);
-  const [correctCount, setCorrectCount] = useState<number>(0);
+  const [correctAnswersCount, setCorrectAnswersCount] = useState<number>(0);
   const [isFinished, setIsFinished] = useState<'victory' | 'defeat' | null>(null);
+  const isFinishedRef = useRef(isFinished);
+  isFinishedRef.current = isFinished;
 
   const activeQuestion: Question = bossDegree.questions[currentIdx] || bossDegree.questions[0];
 
-  // Countdown timer
+  // Countdown timer with clean single interval
   useEffect(() => {
     if (isFinished) return;
-    if (timeLeft <= 0) {
-      setIsFinished('defeat');
-      triggerHaptic('error');
-      return;
-    }
 
     const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          if (!isFinishedRef.current) {
+            setIsFinished('defeat');
+            triggerHaptic('error');
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, isFinished]);
+  }, [isFinished, triggerHaptic]);
 
   const handleSelectOption = (optionId: string) => {
     if (isAnswered || isFinished) return;
@@ -51,22 +58,25 @@ export const BossBattle: React.FC<BossBattleProps> = ({
     const selectedOption = activeQuestion.options.find(o => o.id === optionId);
     if (selectedOption?.is_correct) {
       triggerHaptic('success');
-      setCorrectCount(prev => prev + 1);
+      setCorrectAnswersCount(prev => prev + 1);
     } else {
       triggerHaptic('error');
     }
   };
 
   const handleNext = () => {
-    setSelectedOptionId(null);
-    setIsAnswered(false);
+    const isLastQuestion = currentIdx + 1 >= bossDegree.questions.length;
 
-    if (currentIdx + 1 < bossDegree.questions.length) {
+    if (!isLastQuestion) {
+      setSelectedOptionId(null);
+      setIsAnswered(false);
       setCurrentIdx(prev => prev + 1);
     } else {
-      // Check win condition (all required correct)
-      const finalScore = correctCount + (activeQuestion.options.find(o => o.id === selectedOptionId)?.is_correct ? 0 : 0);
-      if (finalScore >= bossDegree.required_correct - 1) { // -1 because state updates
+      // Check final score
+      const totalCorrect = correctAnswersCount;
+      const requiredCorrect = bossDegree.required_correct || bossDegree.questions.length;
+
+      if (totalCorrect >= requiredCorrect) {
         setIsFinished('victory');
         triggerHaptic('heavy');
         confetti({
@@ -76,6 +86,7 @@ export const BossBattle: React.FC<BossBattleProps> = ({
         });
       } else {
         setIsFinished('defeat');
+        triggerHaptic('error');
       }
     }
   };
@@ -138,18 +149,18 @@ export const BossBattle: React.FC<BossBattleProps> = ({
             Босс оказался быстрее!
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            Не хватило времени или допущена ошибка. Попробуй еще раз — реактор ждет!
+            Правильных ответов: {correctAnswersCount} из {bossDegree.questions.length}. Попробуй снова!
           </p>
         </div>
 
         <div className="space-y-2 pt-4">
           <button
             onClick={() => {
-              setTimeLeft(90);
+              setTimeLeft(bossDegree.questions[0]?.time_limit_seconds || 75);
               setCurrentIdx(0);
               setSelectedOptionId(null);
               setIsAnswered(false);
-              setCorrectCount(0);
+              setCorrectAnswersCount(0);
               setIsFinished(null);
             }}
             className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-600 to-orange-600 text-white font-bold text-xs shadow-lg transition active:scale-95"
@@ -179,15 +190,15 @@ export const BossBattle: React.FC<BossBattleProps> = ({
                 РЕЖИМ БОССА
               </div>
               <div className="text-xs font-bold text-white">
-                Вопрос {currentIdx + 1} из {bossDegree.questions.length}
+                Вопрос {currentIdx + 1} из {bossDegree.questions.length} (Верно: {correctAnswersCount})
               </div>
             </div>
           </div>
 
           {/* Countdown Clock */}
           <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border font-mono font-bold text-sm ${
-            timeLeft < 30 
-              ? 'bg-rose-500/20 border-rose-500 text-rose-300 animate-pulse-fast' 
+            timeLeft < 25 
+              ? 'bg-rose-500/20 border-rose-500 text-rose-300 animate-pulse' 
               : 'bg-slate-800 border-slate-700 text-amber-300'
           }`}>
             <Timer className="w-4 h-4" />
@@ -245,7 +256,7 @@ export const BossBattle: React.FC<BossBattleProps> = ({
       </div>
 
       {isAnswered && (
-        <div className="glass-panel p-4 rounded-2xl border border-slate-700/80 space-y-3">
+        <div className="glass-panel p-4 rounded-2xl border border-slate-700/80 space-y-3 animate-fade-in">
           <p className="text-xs text-slate-300 leading-relaxed font-medium">
             {activeQuestion.explanation}
           </p>

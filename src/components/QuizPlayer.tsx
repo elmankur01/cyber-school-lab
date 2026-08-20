@@ -38,6 +38,15 @@ export const QuizPlayer: React.FC<QuizPlayerProps> = ({
 
   const isEnglishTopic = topic.subject_id === 'english_easy';
 
+  // Cancel speech synthesis on unmount
+  React.useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
   // Text-to-Speech function for English phrases
   const speakText = (text: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();

@@ -68,12 +68,51 @@ export default function App() {
   // Load daily quests
   const [dailyQuests, setDailyQuests] = useState<DailyQuest[]>(() => {
     try {
+      const today = new Date().toISOString().split('T')[0];
+      const lastDate = localStorage.getItem('cyber_lab_last_quest_date');
       const saved = localStorage.getItem('cyber_lab_daily_quests_v1');
+
+      if (lastDate && lastDate !== today) {
+        localStorage.setItem('cyber_lab_last_quest_date', today);
+        return INITIAL_DAILY_QUESTS;
+      }
       return saved ? JSON.parse(saved) : INITIAL_DAILY_QUESTS;
     } catch {
       return INITIAL_DAILY_QUESTS;
     }
   });
+
+  // Daily Streak date sync
+  useEffect(() => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const lastActive = localStorage.getItem('cyber_lab_last_active_date');
+      
+      if (lastActive && lastActive !== today) {
+        const lastTime = new Date(lastActive).getTime();
+        const nowTime = new Date(today).getTime();
+        const diffDays = Math.round((nowTime - lastTime) / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 1) {
+          // Consecutive active day
+          setProfile(p => ({ ...p, streak_days: p.streak_days + 1 }));
+        } else if (diffDays > 1) {
+          // Missed days
+          setProfile(p => {
+            if (p.streak_freeze_count > 0) {
+              return { ...p, streak_freeze_count: p.streak_freeze_count - 1 };
+            }
+            return { ...p, streak_days: 1 };
+          });
+        }
+        localStorage.setItem('cyber_lab_last_active_date', today);
+      } else if (!lastActive) {
+        localStorage.setItem('cyber_lab_last_active_date', today);
+      }
+    } catch {
+      // safe fallback
+    }
+  }, []);
 
   // Sync to localStorage
   useEffect(() => {

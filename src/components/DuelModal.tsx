@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Friend, Question, UserProfile, DuelResult } from '../types';
-import { DUEL_BLITZ_QUESTIONS } from '../data/mockData';
+import { DUEL_BLITZ_QUESTIONS, ANONYMOUS_NICKNAMES } from '../data/mockData';
 import { Timer, Swords, Trophy, CheckCircle2, XCircle, ArrowRight, Zap, RefreshCw, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -29,27 +29,80 @@ export const DuelModal: React.FC<DuelModalProps> = ({
   const [playerCorrect, setPlayerCorrect] = useState<number>(0);
   const [duelResult, setDuelResult] = useState<DuelResult | null>(null);
 
-  const rivalName = rivalFriend ? rivalFriend.nickname : 'Звездный_Стриж';
+  const playerCorrectRef = useRef(playerCorrect);
+  playerCorrectRef.current = playerCorrect;
+  const timeLeftRef = useRef(timeLeft);
+  timeLeftRef.current = timeLeft;
+
+  const rivalName = rivalFriend 
+    ? rivalFriend.nickname 
+    : ANONYMOUS_NICKNAMES[Math.floor(Math.random() * ANONYMOUS_NICKNAMES.length)] + '_' + Math.floor(10 + Math.random() * 90);
   const rivalAvatar = rivalFriend ? (rivalFriend.avatar === 'cat' ? '🐱' : rivalFriend.avatar === 'owl' ? '🦉' : '🤖') : '🐱';
 
   const questions: Question[] = DUEL_BLITZ_QUESTIONS;
   const activeQuestion: Question = questions[currentQIdx] || questions[0];
 
+  const finishBattle = (correctAnswers: number, timeSpent: number) => {
+    const remainingTime = Math.max(0, 60 - timeSpent);
+    const playerScore = (correctAnswers * 100) + (remainingTime * 2);
+
+    // Simulated Rival performance
+    const rivalCorrect = Math.random() > 0.45 ? 2 : 3;
+    const rivalTimeSpent = Math.floor(Math.random() * 18) + 32; // 32-50 sec
+    const rivalRemaining = Math.max(0, 60 - rivalTimeSpent);
+    const rivalScore = (rivalCorrect * 100) + (rivalRemaining * 2);
+
+    const isWin = playerScore >= rivalScore;
+    const earnedXp = isWin ? 100 : 30;
+
+    const res: DuelResult = {
+      player_score: playerScore,
+      player_time_spent: timeSpent,
+      player_correct: correctAnswers,
+      rival_name: rivalName,
+      rival_avatar: rivalAvatar,
+      rival_score: rivalScore,
+      rival_time_spent: rivalTimeSpent,
+      rival_correct: rivalCorrect,
+      is_win: isWin,
+      earned_xp: earnedXp
+    };
+
+    setDuelResult(res);
+    setPhase('result');
+    onDuelFinish(res);
+
+    if (isWin) {
+      triggerHaptic('heavy');
+      confetti({
+        particleCount: 100,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+    } else {
+      triggerHaptic('warning');
+    }
+  };
+
   // Timer effect
   useEffect(() => {
     if (phase !== 'battle') return;
 
-    if (timeLeft <= 0) {
-      finishBattle(playerCorrect, 60);
-      return;
-    }
-
     const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          finishBattle(playerCorrectRef.current, 60);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, phase, playerCorrect]);
+  }, [phase]);
+
+  if (!isOpen) return null;
 
   const startBattle = () => {
     setTimeLeft(60);
@@ -87,53 +140,9 @@ export const DuelModal: React.FC<DuelModalProps> = ({
     }
   };
 
-  const finishBattle = (correctAnswers: number, timeSpent: number) => {
-    // Player score = correct * 100 + remaining seconds * 2
-    const remainingTime = Math.max(0, 60 - timeSpent);
-    const playerScore = (correctAnswers * 100) + (remainingTime * 2);
-
-    // Simulated Rival performance (e.g. 2 correct, 38 sec)
-    const rivalCorrect = Math.random() > 0.4 ? 2 : 3;
-    const rivalTimeSpent = Math.floor(Math.random() * 20) + 30; // 30-50 sec
-    const rivalScore = (rivalCorrect * 100) + (Math.max(0, 60 - rivalTimeSpent) * 2);
-
-    const isWin = playerScore >= rivalScore;
-    const earnedXp = isWin ? 100 : 30;
-
-    const result: DuelResult = {
-      player_score: playerScore,
-      player_time_spent: timeSpent,
-      player_correct: correctAnswers,
-      rival_name: rivalName,
-      rival_avatar: rivalAvatar,
-      rival_score: rivalScore,
-      rival_time_spent: rivalTimeSpent,
-      rival_correct: rivalCorrect,
-      is_win: isWin,
-      earned_xp: earnedXp
-    };
-
-    setDuelResult(result);
-    setPhase('result');
-    onDuelFinish(result);
-
-    if (isWin) {
-      triggerHaptic('heavy');
-      confetti({
-        particleCount: 100,
-        spread: 80,
-        origin: { y: 0.5 }
-      });
-    } else {
-      triggerHaptic('warning');
-    }
-  };
-
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div className="glass-panel w-full max-w-md rounded-3xl border border-rose-500/40 p-5 bg-slate-950 shadow-2xl relative flex flex-col max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+      <div className="glass-panel w-full max-w-md rounded-3xl border border-rose-500/30 p-6 bg-slate-950 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-xl bg-slate-900 text-slate-400 hover:text-white transition z-10"
@@ -141,62 +150,49 @@ export const DuelModal: React.FC<DuelModalProps> = ({
           <X className="w-4 h-4" />
         </button>
 
-        {/* LOBBY PHASE */}
+        {/* PHASE 1: LOBBY */}
         {phase === 'lobby' && (
-          <div className="text-center space-y-5 py-4">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-tr from-rose-600 to-orange-500 flex items-center justify-center text-3xl shadow-xl glow-rose">
-              ⚔️
+          <div className="space-y-6 pt-2 text-center">
+            <div className="flex items-center justify-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-wider">
+              <Swords className="w-4 h-4 text-rose-500" />
+              <span>PvP Кибер-Арена (60 сек)</span>
             </div>
 
-            <div>
-              <div className="text-[10px] font-black uppercase tracking-wider text-rose-400">
-                PvP Кибер-Арена
-              </div>
-              <h3 className="text-xl font-black text-white font-heading mt-0.5">
-                Дуэль на время: 60 сек
-              </h3>
-              <p className="text-xs text-slate-300 mt-1">
-                3 быстрых вопроса. Побеждает тот, кто ответит точнее и быстрее!
-              </p>
-            </div>
-
-            {/* VS Card */}
-            <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-around gap-3">
-              {/* Player */}
-              <div className="text-center space-y-1">
-                <div className="w-12 h-12 mx-auto rounded-2xl bg-cyan-600/30 border border-cyan-400 flex items-center justify-center text-2xl">
-                  {profile.avatar === 'cat' ? '🐱' : profile.avatar === 'owl' ? '🦉' : profile.avatar === 'robot' ? '🤖' : '🦊'}
+            <div className="flex items-center justify-around py-3">
+              {/* You */}
+              <div className="space-y-1.5 flex flex-col items-center">
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-3xl shadow-lg shadow-cyan-500/30 ring-2 ring-cyan-400 ${profile.active_frame || ''}`}>
+                  {profile.avatar === 'cat' ? '🐱' : profile.avatar === 'owl' ? '🦉' : profile.avatar === 'robot' ? '🤖' : profile.avatar === 'dragon' ? '🐲' : '🦊'}
                 </div>
-                <div className="text-xs font-black text-white truncate max-w-[90px]">
-                  {profile.nickname}
-                </div>
-                <div className="text-[10px] text-cyan-300 font-bold">
-                  {profile.duel_wins} побед
-                </div>
+                <div className="text-xs font-black text-white">{profile.nickname}</div>
+                <div className="text-[10px] text-cyan-300 font-bold">Ты ({profile.selected_grade} кл)</div>
               </div>
 
               {/* VS Badge */}
-              <div className="w-10 h-10 rounded-full bg-rose-600/20 border border-rose-500 text-rose-400 font-black text-xs flex items-center justify-center animate-pulse">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-rose-600 to-orange-600 flex items-center justify-center font-black text-sm text-white shadow-xl glow-rose animate-pulse">
                 VS
               </div>
 
               {/* Rival */}
-              <div className="text-center space-y-1">
-                <div className="w-12 h-12 mx-auto rounded-2xl bg-orange-600/30 border border-orange-400 flex items-center justify-center text-2xl">
+              <div className="space-y-1.5 flex flex-col items-center">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-rose-600 flex items-center justify-center text-3xl shadow-lg shadow-rose-500/30 ring-2 ring-rose-400">
                   {rivalAvatar}
                 </div>
-                <div className="text-xs font-black text-white truncate max-w-[90px]">
-                  {rivalName}
-                </div>
-                <div className="text-[10px] text-orange-300 font-bold">
-                  Соперник
-                </div>
+                <div className="text-xs font-black text-white">{rivalName}</div>
+                <div className="text-[10px] text-rose-300 font-bold">Соперник (Онлайн)</div>
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-rose-950/30 border border-rose-500/30 text-[11px] text-rose-200 flex items-center gap-2 text-left">
-              <Zap className="w-4 h-4 text-rose-400 shrink-0" />
-              <span>Бонус за скорость: каждая сохраненная секунда дает +2 очка!</span>
+            <div className="p-3.5 rounded-2xl bg-rose-950/30 border border-rose-500/30 text-left space-y-1.5">
+              <div className="text-[11px] font-bold text-rose-300 flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                <span>Правила дуэли:</span>
+              </div>
+              <ul className="text-[11px] text-slate-300 space-y-1 pl-1">
+                <li>• <strong>3 блиц-вопроса</strong> на логику, счет и грамматику</li>
+                <li>• <strong>Бонус скорости:</strong> +2 очка за каждую оставшуюся секунду!</li>
+                <li>• Награда: <strong>+100 XP</strong> за победу!</li>
+              </ul>
             </div>
 
             <button
@@ -204,151 +200,144 @@ export const DuelModal: React.FC<DuelModalProps> = ({
               className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-rose-600 via-orange-600 to-amber-500 hover:from-rose-500 text-white font-black text-sm shadow-xl shadow-rose-600/30 transition active:scale-95 flex items-center justify-center gap-2"
             >
               <Swords className="w-4 h-4" />
-              <span>В БОЙ! Начать дуэль</span>
+              <span>НАЧАТЬ ДУЭЛЬ!</span>
             </button>
           </div>
         )}
 
-        {/* BATTLE PHASE */}
+        {/* PHASE 2: BATTLE */}
         {phase === 'battle' && (
-          <div className="space-y-4">
-            {/* Header with Countdown */}
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-black text-rose-400 flex items-center gap-1.5">
-                <Swords className="w-4 h-4" />
-                <span>Вопрос {currentQIdx + 1} из {questions.length}</span>
+          <div className="space-y-4 pt-1">
+            {/* Header with timer */}
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-900 border border-slate-800">
+              <div className="text-xs font-bold text-slate-300">
+                Вопрос <span className="text-rose-400 font-black">{currentQIdx + 1}</span> из {questions.length}
               </div>
 
-              <div className={`flex items-center gap-1 px-3 py-1 rounded-xl border font-mono font-black text-xs ${
-                timeLeft < 15 ? 'bg-rose-500/20 border-rose-500 text-rose-400 animate-pulse' : 'bg-slate-900 border-slate-700 text-amber-300'
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-mono font-black text-sm ${
+                timeLeft < 15
+                  ? 'bg-rose-500/20 border-rose-500 text-rose-300 animate-pulse'
+                  : 'bg-slate-800 border-slate-700 text-amber-300'
               }`}>
                 <Timer className="w-3.5 h-3.5" />
                 <span>{timeLeft} сек</span>
               </div>
             </div>
 
-            {/* Question Card */}
-            <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3">
-              <div className="text-xs font-bold text-slate-300">
+            {/* Question */}
+            <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
+              <div className="text-[11px] font-bold text-rose-400 uppercase tracking-wider">
                 {activeQuestion.story_context}
               </div>
-              <h4 className="text-sm font-black text-white leading-snug">
+              <h3 className="text-sm font-extrabold text-white leading-snug">
                 {activeQuestion.question_text}
-              </h4>
+              </h3>
+            </div>
 
-              <div className="space-y-2 pt-1">
-                {activeQuestion.options.map((option) => {
-                  const isSelected = selectedOptionId === option.id;
-                  let btnStyle = 'bg-slate-800/80 hover:bg-slate-700 border-slate-700 text-slate-200';
+            {/* Options */}
+            <div className="space-y-2">
+              {activeQuestion.options.map((option) => {
+                const isSelected = selectedOptionId === option.id;
+                let btnStyle = 'bg-slate-900 border-slate-800 text-slate-200 hover:border-slate-700';
 
-                  if (isAnswered) {
-                    if (option.is_correct) {
-                      btnStyle = 'bg-emerald-600/30 border-emerald-400 text-emerald-200 glow-emerald';
-                    } else if (isSelected && !option.is_correct) {
-                      btnStyle = 'bg-rose-600/30 border-rose-400 text-rose-200 glow-rose';
-                    } else {
-                      btnStyle = 'bg-slate-900 border-slate-800 text-slate-500 opacity-50';
-                    }
+                if (isAnswered) {
+                  if (option.is_correct) {
+                    btnStyle = 'bg-emerald-600/20 border-emerald-500 text-emerald-200';
+                  } else if (isSelected && !option.is_correct) {
+                    btnStyle = 'bg-rose-600/20 border-rose-500 text-rose-200';
+                  } else {
+                    btnStyle = 'bg-slate-900/40 border-slate-800 text-slate-600';
                   }
+                }
 
-                  return (
-                    <button
-                      key={option.id}
-                      disabled={isAnswered}
-                      onClick={() => handleSelectOption(option.id)}
-                      className={`w-full p-3 rounded-xl border text-left text-xs font-bold transition flex items-center justify-between gap-2 active:scale-95 ${btnStyle}`}
-                    >
-                      <span>{option.text}</span>
-                      {isAnswered && option.is_correct && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
-                      {isAnswered && isSelected && !option.is_correct && <XCircle className="w-4 h-4 text-rose-400" />}
-                    </button>
-                  );
-                })}
-              </div>
+                return (
+                  <button
+                    key={option.id}
+                    disabled={isAnswered}
+                    onClick={() => handleSelectOption(option.id)}
+                    className={`w-full p-3 rounded-2xl border text-left text-xs font-bold transition flex items-center justify-between gap-2 active:scale-[0.98] ${btnStyle}`}
+                  >
+                    <span>{option.text}</span>
+                    {isAnswered && option.is_correct && (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    )}
+                    {isAnswered && isSelected && !option.is_correct && (
+                      <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {isAnswered && (
               <button
                 onClick={handleNextQuestion}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 text-white font-black text-xs shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5"
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 text-white text-xs font-black shadow-md transition active:scale-95 flex items-center justify-center gap-1.5"
               >
                 <span>{currentQIdx + 1 < questions.length ? 'Следующий вопрос' : 'Завершить дуэль'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
         )}
 
-        {/* RESULT PHASE */}
+        {/* PHASE 3: RESULT */}
         {phase === 'result' && duelResult && (
-          <div className="text-center space-y-4 py-2">
-            <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-4xl shadow-2xl glow-gold animate-bounce">
+          <div className="space-y-4 pt-2 text-center">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center text-3xl shadow-xl">
               {duelResult.is_win ? '👑' : '🤝'}
             </div>
 
             <div>
-              <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/20 border border-amber-500/40 text-amber-300 mb-1">
-                {duelResult.is_win ? '🎉 ПОБЕДА В ДУЭЛИ!' : 'ХОРОШАЯ БИТВА!'}
+              <div className="text-[10px] font-black uppercase tracking-wider text-amber-400">
+                Результат Дуэли
               </div>
-              <h3 className="text-lg font-black text-white">
-                {duelResult.is_win ? 'Ты обогнал соперника!' : 'Соперник оказался чуть быстрее!'}
+              <h3 className="text-xl font-black text-white font-heading">
+                {duelResult.is_win ? 'Блестящая Победа!' : 'Достойный Бой!'}
               </h3>
-              <p className="text-xs text-slate-300 mt-0.5">
-                Получено: <strong className="text-amber-400">+{duelResult.earned_xp} Кибер-XP</strong>
-              </p>
             </div>
 
-            {/* Score Comparison Table */}
-            <div className="grid grid-cols-2 gap-2 text-left">
-              {/* Player Card */}
-              <div className={`p-3 rounded-2xl border ${
-                duelResult.is_win ? 'bg-emerald-950/40 border-emerald-500/50 glow-emerald' : 'bg-slate-900 border-slate-800'
+            {/* Comparison Board */}
+            <div className="grid grid-cols-2 gap-2.5 p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs">
+              <div className={`p-3 rounded-xl border text-center space-y-1 ${
+                duelResult.is_win ? 'bg-amber-950/30 border-amber-500/50' : 'bg-slate-900 border-slate-800'
               }`}>
-                <div className="text-xs font-black text-white flex items-center gap-1">
-                  <span>Ты</span>
-                  {duelResult.is_win && <Trophy className="w-3.5 h-3.5 text-amber-400" />}
-                </div>
-                <div className="text-lg font-black text-amber-300 mt-1">
-                  {duelResult.player_score} очков
-                </div>
-                <div className="text-[10px] text-slate-400 space-y-0.5 mt-1">
-                  <div>✅ Верно: {duelResult.player_correct} / {questions.length}</div>
-                  <div>⏱️ Время: {duelResult.player_time_spent} сек</div>
+                <div className="text-[10px] text-cyan-300 font-bold">Ты ({profile.nickname})</div>
+                <div className="text-xl font-black text-white">{duelResult.player_score}</div>
+                <div className="text-[9px] text-slate-400">
+                  {duelResult.player_correct}/3 верно • {duelResult.player_time_spent}с
                 </div>
               </div>
 
-              {/* Rival Card */}
-              <div className={`p-3 rounded-2xl border ${
-                !duelResult.is_win ? 'bg-emerald-950/40 border-emerald-500/50 glow-emerald' : 'bg-slate-900 border-slate-800'
+              <div className={`p-3 rounded-xl border text-center space-y-1 ${
+                !duelResult.is_win ? 'bg-amber-950/30 border-amber-500/50' : 'bg-slate-900 border-slate-800'
               }`}>
-                <div className="text-xs font-black text-white flex items-center gap-1">
-                  <span className="truncate">{duelResult.rival_name}</span>
-                  {!duelResult.is_win && <Trophy className="w-3.5 h-3.5 text-amber-400" />}
-                </div>
-                <div className="text-lg font-black text-amber-300 mt-1">
-                  {duelResult.rival_score} очков
-                </div>
-                <div className="text-[10px] text-slate-400 space-y-0.5 mt-1">
-                  <div>✅ Верно: {duelResult.rival_correct} / {questions.length}</div>
-                  <div>⏱️ Время: {duelResult.rival_time_spent} сек</div>
+                <div className="text-[10px] text-rose-300 font-bold">{duelResult.rival_name}</div>
+                <div className="text-xl font-black text-white">{duelResult.rival_score}</div>
+                <div className="text-[9px] text-slate-400">
+                  {duelResult.rival_correct}/3 верно • {duelResult.rival_time_spent}с
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2 pt-2">
+            <div className="p-3 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center justify-center gap-1.5">
+              <Trophy className="w-4 h-4 text-emerald-400" />
+              <span>+{duelResult.earned_xp} XP начислено в профиль!</span>
+            </div>
+
+            <div className="flex gap-2 pt-1">
               <button
                 onClick={startBattle}
-                className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-600 to-orange-600 text-white font-black text-xs shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5"
+                className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 text-white font-black text-xs shadow-md transition active:scale-95 flex items-center justify-center gap-1"
               >
-                <RefreshCw className="w-4 h-4" />
-                <span>Реванш / Еще одна дуэль</span>
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Реванш</span>
               </button>
-
               <button
                 onClick={onClose}
-                className="w-full py-2.5 px-6 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 transition"
+                className="py-3 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white font-bold text-xs transition"
               >
-                Вернуться в главное меню
+                В меню
               </button>
             </div>
           </div>
