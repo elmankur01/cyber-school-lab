@@ -1,4 +1,4 @@
-import { Subject, Achievement, CompanionDrone, Friend, Question } from '../types';
+import { Subject, Achievement, CompanionDrone, Friend, Question, DailyQuest, CyberShopItem } from '../types';
 
 export const COMPANION_DRONES: CompanionDrone[] = [
   {
@@ -103,6 +103,93 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
     icon: '💾',
     reward_xp: 150,
     unlocked: false
+  }
+];
+
+export const INITIAL_DAILY_QUESTS: DailyQuest[] = [
+  {
+    id: 'daily_english',
+    title: 'Лингво-Сканер',
+    description: 'Пройди 1 квест в Английском языке или включи озвучку 🔊',
+    icon: '🗣️',
+    target: 1,
+    progress: 0,
+    reward_xp: 80,
+    completed: false,
+    claimed: false,
+    category: 'english'
+  },
+  {
+    id: 'daily_duel',
+    title: 'Гладиатор Арены',
+    description: 'Сыграй 1 PvP дуэль на время против соперника',
+    icon: '⚔️',
+    target: 1,
+    progress: 0,
+    reward_xp: 100,
+    completed: false,
+    claimed: false,
+    category: 'duel'
+  },
+  {
+    id: 'daily_math',
+    title: 'Квантовый Вычислитель',
+    description: 'Реши любые 2 задачи по математике или информатике',
+    icon: '📐',
+    target: 2,
+    progress: 0,
+    reward_xp: 120,
+    completed: false,
+    claimed: false,
+    category: 'math'
+  }
+];
+
+export const CYBER_SHOP_ITEMS: CyberShopItem[] = [
+  {
+    id: 'skin_gold_bot',
+    name: 'Золотой Нейро-Бот 2.0',
+    category: 'drone_skin',
+    description: 'Премиальный золотой скин со вспышками квантовой энергии',
+    price_xp: 300,
+    icon: '🤖✨',
+    preview_effect: 'glow-gold'
+  },
+  {
+    id: 'skin_cyber_panther',
+    name: 'Неоновая Пантера 9000',
+    category: 'drone_skin',
+    description: 'Ультра-быстрый фиолетовый скин для Кибер-Кота',
+    price_xp: 350,
+    icon: '🐱⚡',
+    preview_effect: 'glow-indigo'
+  },
+  {
+    id: 'frame_neon_cyan',
+    name: 'Неоновая Кибер-Рамка',
+    category: 'avatar_frame',
+    description: 'Светящаяся бирюзовая рамка вокруг аватара',
+    price_xp: 200,
+    icon: '💠',
+    preview_effect: 'ring-4 ring-cyan-400 shadow-lg shadow-cyan-500/50'
+  },
+  {
+    id: 'frame_plasma_fire',
+    name: 'Плазменное Пламя',
+    category: 'avatar_frame',
+    description: 'Анимированная огненно-красная рамка для чемпионов',
+    price_xp: 400,
+    icon: '🔥',
+    preview_effect: 'ring-4 ring-rose-500 shadow-lg shadow-rose-500/60'
+  },
+  {
+    id: 'title_hacker_god',
+    name: 'Титул «Магистр Матрицы»',
+    category: 'title',
+    description: 'Особый светящийся бейдж в профиле и таблице лидеров',
+    price_xp: 500,
+    icon: '👑',
+    preview_effect: 'text-amber-300 font-black'
   }
 ];
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { UserProfile, Topic, TopicDegree, Friend, DuelResult } from './types';
-import { INITIAL_ACHIEVEMENTS } from './data/mockData';
+import { UserProfile, Topic, TopicDegree, Friend, DuelResult, DailyQuest, CyberShopItem } from './types';
+import { INITIAL_ACHIEVEMENTS, INITIAL_DAILY_QUESTS } from './data/mockData';
 import { useTelegram } from './hooks/useTelegram';
 import { Header } from './components/Header';
 import { SubjectCatalog } from './components/SubjectCatalog';
@@ -12,6 +12,8 @@ import { AchievementsModal } from './components/AchievementsModal';
 import { LeaderboardModal } from './components/LeaderboardModal';
 import { FriendsModal } from './components/FriendsModal';
 import { DuelModal } from './components/DuelModal';
+import { DailyQuestsModal } from './components/DailyQuestsModal';
+import { CyberShopModal } from './components/CyberShopModal';
 
 const DEFAULT_PROFILE: UserProfile = {
   id: 'cyber_user_' + Math.random().toString(36).substring(2, 9),
@@ -31,7 +33,9 @@ const DEFAULT_PROFILE: UserProfile = {
   completed_topics: [],
   defeated_bosses: [],
   unlocked_secrets: [],
-  achievements: ['first_blood']
+  achievements: ['first_blood'],
+  inventory: [],
+  active_frame: undefined
 };
 
 export default function App() {
@@ -61,6 +65,16 @@ export default function App() {
     }
   });
 
+  // Load daily quests
+  const [dailyQuests, setDailyQuests] = useState<DailyQuest[]>(() => {
+    try {
+      const saved = localStorage.getItem('cyber_lab_daily_quests_v1');
+      return saved ? JSON.parse(saved) : INITIAL_DAILY_QUESTS;
+    } catch {
+      return INITIAL_DAILY_QUESTS;
+    }
+  });
+
   // Sync to localStorage
   useEffect(() => {
     localStorage.setItem('cyber_lab_profile_v2', JSON.stringify(profile));
@@ -69,6 +83,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('cyber_lab_achievements_v2', JSON.stringify(achievements));
   }, [achievements]);
+
+  useEffect(() => {
+    localStorage.setItem('cyber_lab_daily_quests_v1', JSON.stringify(dailyQuests));
+  }, [dailyQuests]);
 
   // Navigation State
   const [activeTopic, setActiveTopic] = useState<Topic | null>(null);
@@ -81,7 +99,60 @@ export default function App() {
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [isFriendsOpen, setIsFriendsOpen] = useState(false);
   const [isDuelOpen, setIsDuelOpen] = useState(false);
+  const [isQuestsOpen, setIsQuestsOpen] = useState(false);
+  const [isShopOpen, setIsShopOpen] = useState(false);
   const [selectedDuelFriend, setSelectedDuelFriend] = useState<Friend | null>(null);
+
+  // Advance Quest Progress Helper
+  const advanceQuest = (category: 'english' | 'duel' | 'math', amount: number = 1) => {
+    setDailyQuests(prev =>
+      prev.map(q => {
+        if (q.category === category && !q.completed) {
+          const newProgress = Math.min(q.target, q.progress + amount);
+          const isDone = newProgress >= q.target;
+          if (isDone) triggerHaptic('success');
+          return {
+            ...q,
+            progress: newProgress,
+            completed: isDone
+          };
+        }
+        return q;
+      })
+    );
+  };
+
+  // Claim Quest Reward
+  const handleClaimQuestReward = (questId: string) => {
+    setDailyQuests(prev =>
+      prev.map(q => {
+        if (q.id === questId && q.completed && !q.claimed) {
+          triggerHaptic('success');
+          setProfile(p => ({ ...p, xp: p.xp + q.reward_xp }));
+          return { ...q, claimed: true };
+        }
+        return q;
+      })
+    );
+  };
+
+  // Buy Shop Item
+  const handleBuyShopItem = (item: CyberShopItem) => {
+    if (profile.xp < item.price_xp) return;
+    triggerHaptic('success');
+    setProfile(prev => ({
+      ...prev,
+      xp: prev.xp - item.price_xp,
+      inventory: [...(prev.inventory || []), item.id],
+      active_frame: item.category === 'avatar_frame' ? item.preview_effect : prev.active_frame
+    }));
+  };
+
+  // Equip Frame
+  const handleEquipFrame = (frameClass?: string) => {
+    triggerHaptic('light');
+    setProfile(prev => ({ ...prev, active_frame: frameClass }));
+  };
 
   // Update profile handler
   const handleUpdateProfile = (updated: Partial<UserProfile>) => {
@@ -99,6 +170,7 @@ export default function App() {
     if (window.confirm('Сбросить весь игровой прогресс?')) {
       setProfile(DEFAULT_PROFILE);
       setAchievements(INITIAL_ACHIEVEMENTS);
+      setDailyQuests(INITIAL_DAILY_QUESTS);
       setActiveTopic(null);
       setBossModeDegree(null);
       setIsProfileOpen(false);
@@ -144,6 +216,8 @@ export default function App() {
 
   // On Duel finished
   const handleDuelFinish = (result: DuelResult) => {
+    advanceQuest('duel', 1);
+
     if (result.is_win) {
       unlockAchievement('duel_winner');
       if (result.player_time_spent <= 30) {
@@ -162,6 +236,14 @@ export default function App() {
   // On Degree completed in regular quiz
   const handleDegreeComplete = (degreeLevel: number, earnedXp: number) => {
     unlockAchievement('first_blood');
+
+    if (activeTopic?.subject_id === 'english_easy') {
+      advanceQuest('english', 1);
+      unlockAchievement('native_speaker');
+    } else if (activeTopic?.subject_id === 'math_algebra' || activeTopic?.subject_id === 'logic_informatics') {
+      advanceQuest('math', 1);
+    }
+
     setProfile(prev => ({
       ...prev,
       xp: prev.xp + earnedXp,
@@ -181,6 +263,13 @@ export default function App() {
     unlockAchievement('virus_cleaner');
     unlockAchievement('secret_chip');
 
+    if (activeTopic.subject_id === 'english_easy') {
+      advanceQuest('english', 1);
+      unlockAchievement('native_speaker');
+    } else if (activeTopic.subject_id === 'math_algebra' || activeTopic.subject_id === 'logic_informatics') {
+      advanceQuest('math', 1);
+    }
+
     setProfile(prev => ({
       ...prev,
       xp: prev.xp + earnedXp,
@@ -195,6 +284,8 @@ export default function App() {
     setActiveSecretTopic(currentTopicRef);
   };
 
+  const pendingQuestsCount = dailyQuests.filter(q => q.completed && !q.claimed).length;
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       {/* Top Header */}
@@ -205,6 +296,9 @@ export default function App() {
         onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
         onOpenFriends={() => setIsFriendsOpen(true)}
         onOpenDuels={() => handleStartDuelWithFriend(null)}
+        onOpenQuests={() => setIsQuestsOpen(true)}
+        onOpenShop={() => setIsShopOpen(true)}
+        dailyQuestsCount={pendingQuestsCount}
       />
 
       {/* Main Content Area */}
@@ -280,6 +374,21 @@ export default function App() {
         onClose={() => setIsDuelOpen(false)}
         onDuelFinish={handleDuelFinish}
         triggerHaptic={triggerHaptic}
+      />
+
+      <DailyQuestsModal
+        isOpen={isQuestsOpen}
+        onClose={() => setIsQuestsOpen(false)}
+        quests={dailyQuests}
+        onClaimReward={handleClaimQuestReward}
+      />
+
+      <CyberShopModal
+        isOpen={isShopOpen}
+        onClose={() => setIsShopOpen(false)}
+        profile={profile}
+        onBuyItem={handleBuyShopItem}
+        onEquipFrame={handleEquipFrame}
       />
     </div>
   );

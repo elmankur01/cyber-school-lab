@@ -106,6 +106,8 @@ export interface UserProfile {
   defeated_bosses: string[];
   unlocked_secrets: string[];
   achievements: string[];
+  inventory: string[];
+  active_frame?: string;
 }
 
 export interface Achievement {
@@ -115,4 +117,27 @@ export interface Achievement {
   icon: string;
   reward_xp: number;
   unlocked: boolean;
+}
+
+export interface DailyQuest {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  target: number;
+  progress: number;
+  reward_xp: number;
+  completed: boolean;
+  claimed: boolean;
+  category: 'math' | 'english' | 'duel' | 'boss' | 'any';
+}
+
+export interface CyberShopItem {
+  id: string;
+  name: string;
+  category: 'drone_skin' | 'avatar_frame' | 'title';
+  description: string;
+  price_xp: number;
+  icon: string;
+  preview_effect?: string;
 }
