@@ -8,13 +8,15 @@ interface SubjectCatalogProps {
   onSelectTopic: (topic: Topic) => void;
   onOpenSecret: (topic: Topic) => void;
   onSelectGrade: (grade: number) => void;
+  onOpenInstallModal?: () => void;
 }
 
 export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   profile,
   onSelectTopic,
   onOpenSecret,
-  onSelectGrade
+  onSelectGrade,
+  onOpenInstallModal
 }) => {
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>(SUBJECTS[0].id);
 
@@ -63,20 +65,33 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
         </div>
       </div>
 
-      {/* Companion Drone Tip Banner */}
-      <div className="p-3.5 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-indigo-950/40 border border-cyan-500/30 flex items-center gap-3.5 shadow-lg">
-        <div className="w-11 h-11 rounded-2xl bg-slate-800 border border-cyan-500/40 flex items-center justify-center text-2xl shrink-0 shadow-inner">
-          {currentDrone.emoji}
-        </div>
-        <div className="flex-1">
-          <div className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
-            <span>{currentDrone.name}</span>
-            <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-cyan-950 text-cyan-400 border border-cyan-800 font-bold">Дрон-Спутник</span>
+      {/* Companion Drone Tip Banner & Install PWA */}
+      <div className="p-3.5 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-indigo-950/40 border border-cyan-500/30 flex items-center justify-between gap-3 shadow-lg">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-2xl bg-slate-800 border border-cyan-500/40 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+            {currentDrone.emoji}
           </div>
-          <p className="text-[11px] text-slate-300 leading-tight mt-0.5">
-            {currentDrone.bonus_text}
-          </p>
+          <div className="min-w-0">
+            <div className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+              <span>{currentDrone.name}</span>
+              <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-cyan-950 text-cyan-400 border border-cyan-800 font-bold">Спутник</span>
+            </div>
+            <p className="text-[10px] text-slate-300 leading-tight mt-0.5 truncate">
+              {currentDrone.bonus_text}
+            </p>
+          </div>
         </div>
+
+        {onOpenInstallModal && (
+          <button
+            onClick={onOpenInstallModal}
+            className="px-2.5 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 text-[10px] font-black shrink-0 transition active:scale-95 flex items-center gap-1"
+            title="Установить приложение на экран"
+          >
+            <span>📱</span>
+            <span>На экран</span>
+          </button>
+        )}
       </div>
 
       {/* Subject Tabs */}

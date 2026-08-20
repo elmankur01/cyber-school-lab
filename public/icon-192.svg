@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Card -->
+  <rect width="512" height="512" rx="120" fill="url(#bgGrad)" />
+  <rect width="500" height="500" x="6" y="6" rx="114" fill="none" stroke="url(#neonCyan)" stroke-width="6" opacity="0.6" />
+
+  <!-- Orbit Rings -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#22d3ee" stroke-width="4" stroke-dasharray="24 16" opacity="0.3" />
+  <circle cx="256" cy="256" r="130" fill="none" stroke="#818cf8" stroke-width="4" opacity="0.4" />
+
+  <!-- Robot Head / Cyber Core -->
+  <rect x="146" y="160" width="220" height="180" rx="44" fill="#0f172a" stroke="url(#neonCyan)" stroke-width="8" filter="url(#glow)" />
+  
+  <!-- Robot Visor Screen -->
+  <rect x="176" y="196" width="160" height="76" rx="24" fill="#030712" stroke="#38bdf8" stroke-width="4" />
+  
+  <!-- Glowing Eyes -->
+  <circle cx="216" cy="234" r="16" fill="#22d3ee" filter="url(#glow)" />
+  <circle cx="296" cy="234" r="16" fill="#22d3ee" filter="url(#glow)" />
+  <circle cx="220" cy="230" r="5" fill="#ffffff" />
+  <circle cx="300" cy="230" r="5" fill="#ffffff" />
+
+  <!-- Smile / Data Wave -->
+  <path d="M 216 300 Q 256 324 296 300" fill="none" stroke="url(#goldGrad)" stroke-width="8" stroke-linecap="round" />
+
+  <!-- Antenna & Spark -->
+  <line x1="256" y1="160" x2="256" y2="100" stroke="url(#neonCyan)" stroke-width="8" stroke-linecap="round" />
+  <circle cx="256" cy="90" r="18" fill="url(#goldGrad)" filter="url(#glow)" />
+  <circle cx="256" cy="90" r="8" fill="#ffffff" />
+
+  <!-- Left/Right Ear Nodes -->
+  <rect x="118" y="210" width="28" height="60" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="4" />
+  <rect x="366" y="210" width="28" height="60" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="4" />
+
+  <!-- Cyber Badge / Graduation Cap Accent -->
+  <path d="M 176 390 L 256 360 L 336 390 L 256 420 Z" fill="url(#goldGrad)" opacity="0.9" filter="url(#glow)" />
+  <text x="256" y="470" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="34" fill="#22d3ee" text-anchor="middle" letter-spacing="4">КИБЕР-ШКОЛА</text>
+</svg>

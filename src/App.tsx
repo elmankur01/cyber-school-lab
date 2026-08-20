@@ -14,6 +14,7 @@ import { FriendsModal } from './components/FriendsModal';
 import { DuelModal } from './components/DuelModal';
 import { DailyQuestsModal } from './components/DailyQuestsModal';
 import { CyberShopModal } from './components/CyberShopModal';
+import { InstallPwaModal } from './components/InstallPwaModal';
 
 const DEFAULT_PROFILE: UserProfile = {
   id: 'cyber_user_' + Math.random().toString(36).substring(2, 9),
@@ -157,6 +158,7 @@ export default function App() {
   const [isDuelOpen, setIsDuelOpen] = useState(false);
   const [isQuestsOpen, setIsQuestsOpen] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
   const [selectedDuelFriend, setSelectedDuelFriend] = useState<Friend | null>(null);
 
   // Advance Quest Progress Helper
@@ -385,6 +387,7 @@ export default function App() {
             onSelectTopic={(topic) => setActiveTopic(topic)}
             onOpenSecret={(topic) => setActiveSecretTopic(topic)}
             onSelectGrade={handleSelectGrade}
+            onOpenInstallModal={() => setIsInstallModalOpen(true)}
           />
         )}
       </main>
@@ -445,6 +448,11 @@ export default function App() {
         profile={profile}
         onBuyItem={handleBuyShopItem}
         onEquipFrame={handleEquipFrame}
+      />
+
+      <InstallPwaModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
       />
     </div>
   );

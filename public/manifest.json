@@ -1,0 +1,19 @@
+{
+  "name": "Кибер-Школа Лаб: Квесты и Степени",
+  "short_name": "Кибер-Школа",
+  "description": "Образовательная игра-квест для школьников 3–11 классов",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./icon-192.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
