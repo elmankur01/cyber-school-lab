@@ -98,10 +98,10 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'secret_chip',
-    title: 'Хранитель Чипов',
-    description: 'Открой свой первый секретный чип-модуль',
+    title: 'Хакер Знаний',
+    description: 'Открой 3 секретных чип-модуля',
     icon: '💾',
-    reward_xp: 120,
+    reward_xp: 150,
     unlocked: false
   }
 ];
@@ -109,44 +109,44 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
 export const MOCK_FRIENDS: Friend[] = [
   {
     friend_code: 'FOX-782',
-    nickname: 'Звездный_Стриж',
-    avatar: 'cat',
+    nickname: 'Кибер_Лис_42',
+    avatar: 'fox',
     drone_id: 'cyber_cat',
-    selected_grade: 5,
-    xp: 2450,
-    streak_days: 12,
-    duel_wins: 18,
+    xp: 1420,
+    selected_grade: 7,
+    streak_days: 5,
+    duel_wins: 8,
     status: 'online'
   },
   {
-    friend_code: 'OWL-910',
-    nickname: 'Меха_Логик',
+    friend_code: 'CAT-319',
+    nickname: 'Нейро_Котик',
+    avatar: 'cat',
+    drone_id: 'neuro_bot',
+    xp: 980,
+    selected_grade: 5,
+    streak_days: 2,
+    duel_wins: 3,
+    status: 'online'
+  },
+  {
+    friend_code: 'OWL-905',
+    nickname: 'Меха_Сова_IQ',
     avatar: 'owl',
     drone_id: 'mecha_owl',
-    selected_grade: 5,
-    xp: 1890,
-    streak_days: 8,
-    duel_wins: 9,
-    status: 'online'
+    xp: 2350,
+    selected_grade: 9,
+    streak_days: 12,
+    duel_wins: 15,
+    status: 'offline'
   },
   {
-    friend_code: 'BOT-334',
-    nickname: 'Властелин_Формул',
+    friend_code: 'BOT-104',
+    nickname: 'Кванто_Бот',
     avatar: 'robot',
-    drone_id: 'neuro_bot',
-    selected_grade: 6,
-    xp: 1420,
-    streak_days: 5,
-    duel_wins: 7,
-    status: 'in_duel'
-  },
-  {
-    friend_code: 'NEO-555',
-    nickname: 'Нано_Хакер',
-    avatar: 'dragon',
     drone_id: 'aero_drone',
-    selected_grade: 5,
-    xp: 980,
+    xp: 610,
+    selected_grade: 4,
     streak_days: 3,
     duel_wins: 4,
     status: 'offline'
@@ -214,7 +214,7 @@ export const SUBJECTS: Subject[] = [
       {
         id: 'spoken_english_travel',
         subject_id: 'english_easy',
-        title: 'Разговорный английский: Диалоги & Сленг',
+        title: 'Диалоги & Сленг Носителей',
         description: 'Живые фразы носителей для общения, кафе и путешествий',
         grade_level: 5,
         story_setting: 'Международный Космопорт',
@@ -399,54 +399,95 @@ export const SUBJECTS: Subject[] = [
         ]
       },
       {
-        id: 'cyber_vocab',
+        id: 'english_travel_shopping',
         subject_id: 'english_easy',
-        title: 'Cyber Words: Базовые команды',
-        description: 'Слова, которые знает каждый кибер-агент',
-        grade_level: 4,
-        story_setting: 'Международный модуль связи',
+        title: 'Путешествия: Отель, Магазины & Цены',
+        description: 'Покупки, вызов такси и заселение в отель',
+        grade_level: 3,
+        story_setting: 'Торговый Кибер-Квартал',
         secret_material: {
-          title: 'Лайфхак запоминания английских глаголов',
-          description: 'Ассоциации и связка с играми',
-          fact: 'Большинство компьютерных терминов — это простые английские слова: Save (сохранить/спасти), Delete (стереть), Upgrade (улучшить), Bug (жук/ошибка)!',
-          mini_lesson: 'Чтобы составить простое предложение на английском, используй порядок: Кто + Что делает + Что/Где (I speak English).'
+          title: 'Как спрашивать цену и скидку на английском',
+          description: 'Полезные фразы для магазинов',
+          fact: 'Фраза «How much is this?» (Сколько это стоит?) работает везде! А если хочешь вежливо спросить скидку, скажи: «Is there any discount on this?»',
+          mini_lesson: 'При покупке одежды: «Can I try this on?» = «Могу я это примерить?». Размеры: S (Small), M (Medium), L (Large), XL (Extra Large).'
         },
         degrees: [
           {
             level: 1,
-            title: 'Степень I: Сканирование',
-            subtitle: 'Расшифровка команд робота',
+            title: 'Степень I: В Магазине & Покупки',
+            subtitle: 'Как узнать цену и расплатиться',
             required_correct: 2,
             questions: [
               {
-                id: 'eng_1_1',
+                id: 'shop_1_1',
                 degree_level: 1,
-                story_context: 'Робот передает статус системы: «The system is READY».',
-                question_text: 'Что означает слово «READY»?',
+                story_context: 'Ты хочешь узнать стоимость крутого кибер-шлема.',
+                question_text: 'Как спросить у продавца «Сколько это стоит?»',
                 options: [
-                  { id: 'a', text: 'Готова', is_correct: true },
-                  { id: 'b', text: 'Сломана', is_correct: false },
-                  { id: 'c', text: 'Заблокирована', is_correct: false },
-                  { id: 'd', text: 'Перегружена', is_correct: false }
+                  { id: 'a', text: 'How much does it cost?', is_correct: true },
+                  { id: 'b', text: 'What is price now?', is_correct: false },
+                  { id: 'c', text: 'Give me price list', is_correct: false },
+                  { id: 'd', text: 'Money for this please', is_correct: false }
                 ],
-                hint: '«Ready, steady, go!» — На старт, внимание, марш!',
-                explanation: 'Ready = Готов / Готова. Система в боевой готовности!',
-                base_xp: 20
+                hint: '«How much is it?» или «How much does it cost?».',
+                explanation: '«How much does it cost?» — классический и грамотный вопрос о цене!',
+                base_xp: 25
               },
               {
-                id: 'eng_1_2',
+                id: 'shop_1_2',
                 degree_level: 1,
-                story_context: 'Выбери правильную форму глагола to be.',
-                question_text: 'Вставь пропущенное слово: «We ___ cyber agents.»',
+                story_context: 'Кассир спрашивает: «Cash or card?»',
+                question_text: 'Что у тебя спрашивают?',
                 options: [
-                  { id: 'a', text: 'are', is_correct: true },
-                  { id: 'b', text: 'is', is_correct: false },
-                  { id: 'c', text: 'am', is_correct: false },
-                  { id: 'd', text: 'be', is_correct: false }
+                  { id: 'a', text: 'Оплата наличными или картой?', is_correct: true },
+                  { id: 'b', text: 'Вам нужен пакет или чек?', is_correct: false },
+                  { id: 'c', text: 'Где вы живете?', is_correct: false },
+                  { id: 'd', text: 'Сколько вам лет?', is_correct: false }
                 ],
-                hint: 'I am, He/She/It is, We/You/They are.',
-                explanation: 'С местоимением We используется форма ARE: «We are cyber agents»!',
-                base_xp: 20
+                hint: 'Cash = наличные, Card = банковская карта.',
+                explanation: 'Cash = Наличные деньги, Card = Карта. Оплата принята!',
+                base_xp: 25
+              }
+            ]
+          },
+          {
+            level: 4,
+            title: 'Вирус-Босс: Отельный Бот',
+            subtitle: 'Заселись в отель за 75 секунд!',
+            required_correct: 2,
+            isBoss: true,
+            questions: [
+              {
+                id: 'boss_hotel_1',
+                degree_level: 4,
+                story_context: '⚡ РЕСЕПШН 1/2: Администратор: «Do you have a reservation under your name?»',
+                question_text: 'Что ответить, если номер был забронирован?',
+                options: [
+                  { id: 'a', text: 'Yes, I booked a single room for three nights.', is_correct: true },
+                  { id: 'b', text: 'I like sleeping very much.', is_correct: false },
+                  { id: 'c', text: 'No, give me free room.', is_correct: false },
+                  { id: 'd', text: 'Where is breakfast?', is_correct: false }
+                ],
+                hint: '«I booked a room» = Я забронировал номер.',
+                explanation: '«Yes, I booked a single room...» — правильный ответ! Ключ от номера получен!',
+                base_xp: 60,
+                time_limit_seconds: 75
+              },
+              {
+                id: 'boss_hotel_2',
+                degree_level: 4,
+                story_context: '⚡ РЕСЕПШН 2/2: «What time is check-out tomorrow?»',
+                question_text: 'Что означает слово «Check-out»?',
+                options: [
+                  { id: 'a', text: 'Время выезда из номера', is_correct: true },
+                  { id: 'b', text: 'Время начала завтрака', is_correct: false },
+                  { id: 'c', text: 'Время уборки комнат', is_correct: false },
+                  { id: 'd', text: 'Закрытие дверей отеля', is_correct: false }
+                ],
+                hint: 'Check-in = заезд, Check-out = выезд.',
+                explanation: 'Check-out — это время выселения из номера! БОСС ОТЕЛЯ ПРОЙДЕН!',
+                base_xp: 70,
+                time_limit_seconds: 75
               }
             ]
           }
@@ -516,82 +557,6 @@ export const SUBJECTS: Subject[] = [
             ]
           },
           {
-            level: 2,
-            title: 'Степень II: Поиск багов',
-            subtitle: 'Проверка вычислений робота',
-            required_correct: 2,
-            questions: [
-              {
-                id: 'm3_2_1',
-                degree_level: 2,
-                story_context: 'Робот ошибся в порядке действий.',
-                question_text: 'Чему равно значение выражения: 20 + 5 * 4 ?',
-                options: [
-                  { id: 'a', text: '40', is_correct: true },
-                  { id: 'b', text: '100', is_correct: false },
-                  { id: 'c', text: '45', is_correct: false },
-                  { id: 'd', text: '60', is_correct: false }
-                ],
-                hint: 'Сначала выполняется умножение: 5 * 4 = 20, а затем сложение: 20 + 20.',
-                explanation: 'Умножение главнее сложения! 5 * 4 = 20, 20 + 20 = 40. Не попадись в ловушку 25 * 4!',
-                base_xp: 35
-              },
-              {
-                id: 'm3_2_2',
-                degree_level: 2,
-                story_context: 'Защитный барьер требует точный остаток.',
-                question_text: 'Какой остаток получится при делении 38 на 5?',
-                options: [
-                  { id: 'a', text: '3', is_correct: true },
-                  { id: 'b', text: '2', is_correct: false },
-                  { id: 'c', text: '4', is_correct: false },
-                  { id: 'd', text: '1', is_correct: false }
-                ],
-                hint: 'Ближайшее число, которое делится на 5 — это 35. 38 - 35 = 3.',
-                explanation: '38 = 5 * 7 + 3. Остаток равен 3!',
-                base_xp: 35
-              }
-            ]
-          },
-          {
-            level: 3,
-            title: 'Степень III: Кибер-Эксперт',
-            subtitle: 'Сложные цепочки вычислений',
-            required_correct: 2,
-            questions: [
-              {
-                id: 'm3_3_1',
-                degree_level: 3,
-                story_context: 'Синхронизация трех серверов.',
-                question_text: 'Если на первом сервере 15 файлов, на втором в 3 раза больше, а на третьем на 10 меньше, чем на втором. Сколько всего файлов?',
-                options: [
-                  { id: 'a', text: '95', is_correct: true },
-                  { id: 'b', text: '85', is_correct: false },
-                  { id: 'c', text: '105', is_correct: false },
-                  { id: 'd', text: '75', is_correct: false }
-                ],
-                hint: '1-й = 15; 2-й = 15 * 3 = 45; 3-й = 45 - 10 = 35. Сумма: 15 + 45 + 35 = 95.',
-                explanation: '15 + 45 + 35 = 95 файлов. Серверы полностью синхронизированы!',
-                base_xp: 50
-              },
-              {
-                id: 'm3_3_2',
-                degree_level: 3,
-                story_context: 'Квантовый таймер защиты.',
-                question_text: 'Сколько минут в 3 часах и 25 минутах?',
-                options: [
-                  { id: 'a', text: '205 минут', is_correct: true },
-                  { id: 'b', text: '195 минут', is_correct: false },
-                  { id: 'c', text: '215 минут', is_correct: false },
-                  { id: 'd', text: '185 минут', is_correct: false }
-                ],
-                hint: 'В 1 часе 60 минут. 3 * 60 = 180 минут. 180 + 25 = 205 минут.',
-                explanation: '3 * 60 + 25 = 205 минут. Точный расчет времени!',
-                base_xp: 50
-              }
-            ]
-          },
-          {
             level: 4,
             title: 'Вирус-Босс: Глитч-Калькулятор',
             subtitle: '3 задачи за 75 секунд до сбоя системы!',
@@ -651,54 +616,149 @@ export const SUBJECTS: Subject[] = [
         ]
       },
       {
-        id: 'math_linear_eq',
+        id: 'math_fractions_percents',
         subject_id: 'math_algebra',
-        title: 'Уравнения & Неизвестные X',
-        description: 'Линейные уравнения, перенос слагаемых и скобки',
-        grade_level: 7,
-        story_setting: 'Квантовый Сервер №7',
+        title: 'Дроби & Проценты: Квантовые Доли',
+        description: 'Скидки, расчет процентов и сложение дробей с разными знаменателями',
+        grade_level: 6,
+        story_setting: 'Квантовый Распределитель Энергии',
         secret_material: {
-          title: 'Секрет быстрого решения пропорций',
-          description: 'Правило бабочки / крест-накрест',
-          fact: 'Если a/b = c/d, то a*d = b*c. Перемножай крест-накрест — и никаких дробей!',
-          mini_lesson: 'Всегда держи переменные слева, а числа справа. При переносе через знак равенства знак ВСЕГДА меняется на противоположный!'
+          title: 'Как быстро считать 15% и 20% в уме',
+          description: 'Супер-лайфхак для магазинов',
+          fact: 'Чтобы найти 10% от любого числа, просто отбрось ноль (или сдвинь запятую влево на 1 знак). Пример: 10% от 480 = 48. Чтобы найти 20% — умножь 48 на 2 = 96!',
+          mini_lesson: 'При сложении дробей 1/2 + 1/3 приводи к общему знаменателю 6: 3/6 + 2/6 = 5/6.'
         },
         degrees: [
           {
             level: 1,
-            title: 'Степень I: Сканирование',
-            subtitle: 'Простые линейные уравнения',
+            title: 'Степень I: Проценты в реальной жизни',
+            subtitle: 'Расчет скидок и кэшбэка',
             required_correct: 2,
             questions: [
               {
-                id: 'eq_7_1',
+                id: 'frc_1_1',
                 degree_level: 1,
-                story_context: 'Калибровка частоты процессора.',
-                question_text: 'Чему равен x: 4x - 16 = 24?',
+                story_context: 'Игровая консоль стоит 20 000 руб. На нее действует скидка 15%.',
+                question_text: 'Сколько составит скидка в рублях?',
                 options: [
-                  { id: 'a', text: 'x = 10', is_correct: true },
-                  { id: 'b', text: 'x = 2', is_correct: false },
-                  { id: 'c', text: 'x = 8', is_correct: false },
-                  { id: 'd', text: 'x = 6', is_correct: false }
+                  { id: 'a', text: '3 000 руб.', is_correct: true },
+                  { id: 'b', text: '1 500 руб.', is_correct: false },
+                  { id: 'c', text: '2 500 руб.', is_correct: false },
+                  { id: 'd', text: '4 000 руб.', is_correct: false }
                 ],
-                hint: '4x = 24 + 16 → 4x = 40 → x = 10.',
-                explanation: '4x = 40 → x = 10. Частота стабилизирована!',
-                base_xp: 20
+                hint: '10% от 20000 = 2000. 5% = 1000. 2000 + 1000 = 3000 руб.',
+                explanation: '15% от 20 000 = 3 000 руб. Новая цена консоли 17 000 руб!',
+                base_xp: 25
               },
               {
-                id: 'eq_7_2',
+                id: 'frc_1_2',
                 degree_level: 1,
-                story_context: 'Сбалансируй нагрузку.',
-                question_text: 'Реши уравнение: 7x + 5 = 3x + 25',
+                story_context: 'Сложение долей энергетических ядер.',
+                question_text: 'Чему равна сумма: 3/4 + 1/2 = ?',
                 options: [
-                  { id: 'a', text: 'x = 5', is_correct: true },
-                  { id: 'b', text: 'x = 4', is_correct: false },
-                  { id: 'c', text: 'x = 6', is_correct: false },
-                  { id: 'd', text: 'x = 3', is_correct: false }
+                  { id: 'a', text: '5/4 (или 1 ¼)', is_correct: true },
+                  { id: 'b', text: '4/6', is_correct: false },
+                  { id: 'c', text: '1/2', is_correct: false },
+                  { id: 'd', text: '4/4', is_correct: false }
                 ],
-                hint: '7x - 3x = 25 - 5 → 4x = 20 → x = 5.',
-                explanation: '4x = 20 → x = 5. Балансировка завершена!',
-                base_xp: 20
+                hint: '1/2 = 2/4. 3/4 + 2/4 = 5/4 = 1 ¼.',
+                explanation: '3/4 + 2/4 = 5/4 = 1.25. Реактор заряжен на 125%!',
+                base_xp: 25
+              }
+            ]
+          },
+          {
+            level: 4,
+            title: 'Вирус-Босс: Процентный Сбой',
+            subtitle: 'Реши 2 задачи на доли за 75 сек!',
+            required_correct: 2,
+            isBoss: true,
+            questions: [
+              {
+                id: 'boss_frc_1',
+                degree_level: 4,
+                story_context: '⚡ ВИРУС 1/2: Батарея дрона разрядилась на 40%, осталось 1800 мАч.',
+                question_text: 'Какова была полная емкость батареи?',
+                options: [
+                  { id: 'a', text: '3 000 мАч', is_correct: true },
+                  { id: 'b', text: '2 500 мАч', is_correct: false },
+                  { id: 'c', text: '3 600 мАч', is_correct: false },
+                  { id: 'd', text: '2 200 мАч', is_correct: false }
+                ],
+                hint: 'Осталось 60% = 1800 мАч. 1% = 1800 / 60 = 30. 100% = 3000.',
+                explanation: '1800 / 0.6 = 3000 мАч. Емкость восстановлена!',
+                base_xp: 70,
+                time_limit_seconds: 75
+              },
+              {
+                id: 'boss_frc_2',
+                degree_level: 4,
+                story_context: '⚡ ВИРУС 2/2: Сократи квантовую дробь 42/56.',
+                question_text: 'Какой несократимый вид имеет дробь 42/56?',
+                options: [
+                  { id: 'a', text: '3/4', is_correct: true },
+                  { id: 'b', text: '2/3', is_correct: false },
+                  { id: 'c', text: '6/8', is_correct: false },
+                  { id: 'd', text: '7/9', is_correct: false }
+                ],
+                hint: 'Раздели числитель и знаменатель на 14 (или на 7, а потом на 2).',
+                explanation: '42 / 14 = 3; 56 / 14 = 4 → 3/4. БОСС ДРОБЕЙ ПОБЕЖДЕН!',
+                base_xp: 80,
+                time_limit_seconds: 75
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'math_geometry_pythagoras',
+        subject_id: 'math_algebra',
+        title: 'Геометрия & Теорема Пифагора',
+        description: 'Гипотенуза, углы треугольника и расчет площадей',
+        grade_level: 8,
+        story_setting: 'Голографическая Сетка Полигонов',
+        secret_material: {
+          title: 'Египетский треугольник (3-4-5)',
+          description: 'Секрет строителей пирамид',
+          fact: 'Прямоугольный треугольник со сторонами 3, 4 и 5 называется египетским. Если стороны равны 6, 8 — гипотенуза ВСЕГДА будет 10 (3*2, 4*2, 5*2)!',
+          mini_lesson: 'Теорема Пифагора: a² + b² = c². Сумма квадратов катетов равна квадрату гипотенузы!'
+        },
+        degrees: [
+          {
+            level: 1,
+            title: 'Степень I: Углы и гипотенуза',
+            subtitle: 'Основы прямоугольных фигур',
+            required_correct: 2,
+            questions: [
+              {
+                id: 'geom_1_1',
+                degree_level: 1,
+                story_context: 'Катеты антенны равны 6 м и 8 м.',
+                question_text: 'Чему равна длина поддерживающего троса (гипотенузы)?',
+                options: [
+                  { id: 'a', text: '10 м', is_correct: true },
+                  { id: 'b', text: '14 м', is_correct: false },
+                  { id: 'c', text: '12 м', is_correct: false },
+                  { id: 'd', text: '9 м', is_correct: false }
+                ],
+                hint: '6² + 8² = 36 + 64 = 100. √100 = 10 м.',
+                explanation: 'a² + b² = 36 + 64 = 100 → c = 10 м. Антенна закреплена!',
+                base_xp: 25
+              },
+              {
+                id: 'geom_1_2',
+                degree_level: 1,
+                story_context: 'Сумма углов треугольника.',
+                question_text: 'В треугольнике два угла равны 50° и 70°. Чему равен третий угол?',
+                options: [
+                  { id: 'a', text: '60°', is_correct: true },
+                  { id: 'b', text: '50°', is_correct: false },
+                  { id: 'c', text: '80°', is_correct: false },
+                  { id: 'd', text: '70°', is_correct: false }
+                ],
+                hint: 'Сумма всех углов любого треугольника ВСЕГДА равна 180°. 180 - (50 + 70) = 60°.',
+                explanation: '180° - 120° = 60°. Точный геометрический расчет!',
+                base_xp: 25
               }
             ]
           }
@@ -713,7 +773,7 @@ export const SUBJECTS: Subject[] = [
     icon: '💻',
     color: 'from-emerald-600 to-teal-700',
     border_color: 'border-emerald-500/40',
-    description: 'Двоичный код, алгоритмы, логические операторы И/ИЛИ/НЕ и шифры',
+    description: 'Двоичный код, алгоритмы Python, логические операторы И/ИЛИ/НЕ и кибербезопасность',
     topics: [
       {
         id: 'binary_and_logic',
@@ -764,6 +824,101 @@ export const SUBJECTS: Subject[] = [
                 hint: 'НЕ 0 = 1. (1 ИЛИ 0) = 1. 1 И 1 = 1.',
                 explanation: '1 И 1 = 1 (ИСТИНА). Шлюз открыт!',
                 base_xp: 25
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'cs_python_algorithms',
+        subject_id: 'logic_informatics',
+        title: 'Python: Переменные, Циклы & Условия',
+        description: 'Чтение кода, условия if/else и циклы for/while',
+        grade_level: 7,
+        story_setting: 'Лаборатория Нейросетей',
+        secret_material: {
+          title: 'Почему Python нумерует списки с нуля',
+          description: 'Тайна 0-индексации',
+          fact: 'В программировании первый элемент списка имеет индекс 0, а не 1. Если у тебя список `fruits = ["яблоко", "банан"]`, то `fruits[0]` — это яблоко!',
+          mini_lesson: 'Команда `print()` выводит текст на экран, а `input()` запрашивает ввод у пользователя.'
+        },
+        degrees: [
+          {
+            level: 1,
+            title: 'Степень I: Анализ кода',
+            subtitle: 'Что выведет программа?',
+            required_correct: 2,
+            questions: [
+              {
+                id: 'py_1_1',
+                degree_level: 1,
+                story_context: 'Анализ фрагмента кода на Python:\nx = 10\ny = 3\nprint(x % y)',
+                question_text: 'Что выведет этот скрипт? (Оператор % — остаток от деления)',
+                options: [
+                  { id: 'a', text: '1', is_correct: true },
+                  { id: 'b', text: '3', is_correct: false },
+                  { id: 'c', text: '3.33', is_correct: false },
+                  { id: 'd', text: '0', is_correct: false }
+                ],
+                hint: '10 делится на 3 с остатком: 10 = 3*3 + 1.',
+                explanation: 'Оператор % возвращает остаток от деления. 10 % 3 = 1!',
+                base_xp: 30
+              },
+              {
+                id: 'py_1_2',
+                degree_level: 1,
+                story_context: 'Цикл for в Python:\ncount = 0\nfor i in range(4):\n    count += 2\nprint(count)',
+                question_text: 'Чему будет равен count после завершения цикла?',
+                options: [
+                  { id: 'a', text: '8', is_correct: true },
+                  { id: 'b', text: '4', is_correct: false },
+                  { id: 'c', text: '6', is_correct: false },
+                  { id: 'd', text: '10', is_correct: false }
+                ],
+                hint: 'Цикл повторится 4 раза (для 0, 1, 2, 3). Каждый раз прибавляется 2: 4 * 2 = 8.',
+                explanation: 'Цикл range(4) выполняется 4 раза: 0 + 2 + 2 + 2 + 2 = 8!',
+                base_xp: 30
+              }
+            ]
+          },
+          {
+            level: 4,
+            title: 'Вирус-Босс: Баг Переполнения Стэка',
+            subtitle: 'Исправь 2 программные ошибки за 75 сек!',
+            required_correct: 2,
+            isBoss: true,
+            questions: [
+              {
+                id: 'boss_py_1',
+                degree_level: 4,
+                story_context: '⚡ ДЕБАГ 1/2: Какой тип данных вернет выражение: type("42")?',
+                question_text: 'Определи тип переменной в Python:',
+                options: [
+                  { id: 'a', text: 'str (строка)', is_correct: true },
+                  { id: 'b', text: 'int (целое число)', is_correct: false },
+                  { id: 'c', text: 'float (дробное)', is_correct: false },
+                  { id: 'd', text: 'bool (логический)', is_correct: false }
+                ],
+                hint: 'Все, что заключено в кавычки "...", является строкой (str).',
+                explanation: 'Кавычки "42" превращают число в строковый тип str!',
+                base_xp: 70,
+                time_limit_seconds: 75
+              },
+              {
+                id: 'boss_py_2',
+                degree_level: 4,
+                story_context: '⚡ ДЕБАГ 2/2: Как проверить равенство двух переменных a и b в условии if?',
+                question_text: 'Какой оператор сравнения используется в Python?',
+                options: [
+                  { id: 'a', text: 'a == b', is_correct: true },
+                  { id: 'b', text: 'a = b', is_correct: false },
+                  { id: 'c', text: 'a === b', is_correct: false },
+                  { id: 'd', text: 'a eq b', is_correct: false }
+                ],
+                hint: 'Один знак = присваивает значение, а двойной == сравнивает!',
+                explanation: '`a == b` — оператор проверки равенства. БОСС ПЕРЕПОЛНЕНИЯ УНИЧТОЖЕН!',
+                base_xp: 80,
+                time_limit_seconds: 75
               }
             ]
           }
@@ -833,6 +988,60 @@ export const SUBJECTS: Subject[] = [
             ]
           }
         ]
+      },
+      {
+        id: 'rus_roots_alternation',
+        subject_id: 'russian_lang',
+        title: 'Чередование корней: ЛАГ/ЛОЖ & РАСТ/РОС',
+        description: 'Правила написания безударных гласных в корнях',
+        grade_level: 6,
+        story_setting: 'Архив Древних Рукописей',
+        secret_material: {
+          title: 'Лайфхак правила суффикса -А-',
+          description: 'Суффикс-подсказка',
+          fact: 'В корнях БЕР/БИР, ДЕР/ДИР, СТЕЛ/СТИЛ пишется И, только если после корня стоит суффикс А! Запомни имя: «ИвАн» (И пишется перед А): собИрАть, но собЕру!',
+          mini_lesson: 'Перед Г пишется А (полАгать), перед Ж пишется О (полОжить).'
+        },
+        degrees: [
+          {
+            level: 1,
+            title: 'Степень I: Корни с чередованием',
+            subtitle: 'Выбери правильную букву',
+            required_correct: 2,
+            questions: [
+              {
+                id: 'rt_1_1',
+                degree_level: 1,
+                story_context: 'Дебаг текста отчета.',
+                question_text: 'В каком слове на месте пропуска пишется буква А?',
+                options: [
+                  { id: 'a', text: 'Предл...гать решение', is_correct: true },
+                  { id: 'b', text: 'Предл...жить помощь', is_correct: false },
+                  { id: 'c', text: 'Возл...жить цветы', is_correct: false },
+                  { id: 'd', text: 'Сл...жить числа', is_correct: false }
+                ],
+                hint: 'В корне ЛАГ/ЛОЖ перед буквой Г пишется А, перед Ж — буква О.',
+                explanation: 'ПредлАгать — перед буквой Г пишется буква А!',
+                base_xp: 25
+              },
+              {
+                id: 'rt_1_2',
+                degree_level: 1,
+                story_context: 'Сканирование биологического описания.',
+                question_text: 'В каком слове пишется буква О?',
+                options: [
+                  { id: 'a', text: 'Густые зар...сли', is_correct: true },
+                  { id: 'b', text: 'Быстро взр...стать', is_correct: false },
+                  { id: 'c', text: 'Юное р...стение', is_correct: false },
+                  { id: 'd', text: 'Зеленый р...сток (исключение)', is_correct: false }
+                ],
+                hint: 'Перед СТ и Щ пишется А (растение, выращенный), перед С пишется О (заросли).',
+                explanation: 'Заросли — перед буквой С пишется буква О!',
+                base_xp: 25
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -893,6 +1102,60 @@ export const SUBJECTS: Subject[] = [
                 ],
                 hint: '1 Паскаль = 1 Ньютон на 1 квадратный метр (Н/м²).',
                 explanation: 'Давление измеряется в Паскалях (Па) в честь Блеза Паскаля!',
+                base_xp: 25
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'physics_electricity_circuits',
+        subject_id: 'physics_nature',
+        title: 'Электричество & Закон Ома',
+        description: 'Сила тока, напряжение, сопротивление и электрические цепи',
+        grade_level: 8,
+        story_setting: 'Электростанция Кибер-Города',
+        secret_material: {
+          title: 'Треугольник Закона Ома',
+          description: 'Как никогда не путать формулу',
+          fact: 'Нарисуй треугольник: сверху U (напряжение), снизу I (ток) и R (сопротивление). Закрой пальцем то, что ищешь: U = I * R; I = U / R; R = U / I!',
+          mini_lesson: 'В розетке дома переменное напряжение 220 Вольт. Сила тока измеряется в Амперах (А), а сопротивление в Омах (Ом).'
+        },
+        degrees: [
+          {
+            level: 1,
+            title: 'Степень I: Ток и напряжение',
+            subtitle: 'Расчет параметров цепи',
+            required_correct: 2,
+            questions: [
+              {
+                id: 'el_1_1',
+                degree_level: 1,
+                story_context: 'Напряжение на клеммах чипа 12 В, сопротивление 4 Ом.',
+                question_text: 'Какова сила тока в проводнике?',
+                options: [
+                  { id: 'a', text: '3 Ампера (А)', is_correct: true },
+                  { id: 'b', text: '48 Ампер (А)', is_correct: false },
+                  { id: 'c', text: '8 Ампер (А)', is_correct: false },
+                  { id: 'd', text: '16 Ампер (А)', is_correct: false }
+                ],
+                hint: 'По закону Ома: I = U / R = 12 / 4 = 3 А.',
+                explanation: 'I = 12 В / 4 Ом = 3 А. Ток стабилен!',
+                base_xp: 25
+              },
+              {
+                id: 'el_1_2',
+                degree_level: 1,
+                story_context: 'Определение единиц измерения.',
+                question_text: 'В каких единицах измеряется электрическое сопротивление?',
+                options: [
+                  { id: 'a', text: 'Омы (Ом)', is_correct: true },
+                  { id: 'b', text: 'Вольты (В)', is_correct: false },
+                  { id: 'c', text: 'Ватты (Вт)', is_correct: false },
+                  { id: 'd', text: 'Кулоны (Кл)', is_correct: false }
+                ],
+                hint: 'В честь немецкого физика Георга Ома.',
+                explanation: 'Электрическое сопротивление измеряется в Омах (Ом)!',
                 base_xp: 25
               }
             ]
