@@ -20,7 +20,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const grades = Array.from({ length: 11 }, (_, i) => i + 1);
+  const grades = Array.from({ length: 9 }, (_, i) => i + 3); // 3-й — 11-й классы
 
   const handleRandomNickname = () => {
     const randomNick = ANONYMOUS_NICKNAMES[Math.floor(Math.random() * ANONYMOUS_NICKNAMES.length)];

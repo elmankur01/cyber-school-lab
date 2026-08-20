@@ -21,7 +21,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   const activeSubject = SUBJECTS.find(s => s.id === selectedSubjectId) || SUBJECTS[0];
   const currentDrone = COMPANION_DRONES.find(d => d.id === profile.drone_id) || COMPANION_DRONES[0];
 
-  const grades = Array.from({ length: 11 }, (_, i) => i + 1);
+  const grades = Array.from({ length: 9 }, (_, i) => i + 3); // 3-й — 11-й классы
 
   // Sort topics: matching selected grade first
   const sortedTopics = [...activeSubject.topics].sort((a, b) => {

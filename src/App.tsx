@@ -198,10 +198,10 @@ export default function App() {
     setProfile(prev => ({ ...prev, ...updated }));
   };
 
-  // Grade selection handler
+  // Grade selection handler (3 to 11 grade)
   const handleSelectGrade = (grade: number) => {
     triggerHaptic('light');
-    setProfile(prev => ({ ...prev, selected_grade: grade }));
+    setProfile(prev => ({ ...prev, selected_grade: Math.max(3, Math.min(11, grade)) }));
   };
 
   // Reset progress handler
