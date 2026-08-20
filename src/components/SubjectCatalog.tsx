@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Topic, UserProfile } from '../types';
 import { SUBJECTS, COMPANION_DRONES } from '../data/mockData';
-import { BookOpen, CheckCircle2, Sparkles, ChevronRight, Gift, Cpu } from 'lucide-react';
+import { BookOpen, CheckCircle2, Sparkles, ChevronRight, Gift, Cpu, Star } from 'lucide-react';
 
 interface SubjectCatalogProps {
   profile: UserProfile;
@@ -23,22 +23,26 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
 
   const grades = Array.from({ length: 11 }, (_, i) => i + 1);
 
-  // Filter topics for selected grade, or show all if none match exactly
-  const matchingTopics = activeSubject.topics.filter(t => t.grade_level === profile.selected_grade);
-  const displayTopics = matchingTopics.length > 0 ? matchingTopics : activeSubject.topics;
+  // Sort topics: matching selected grade first
+  const sortedTopics = [...activeSubject.topics].sort((a, b) => {
+    const aMatch = a.grade_level === profile.selected_grade ? 1 : 0;
+    const bMatch = b.grade_level === profile.selected_grade ? 1 : 0;
+    return bMatch - aMatch;
+  });
 
   return (
-    <div className="max-w-md mx-auto p-4 space-y-4 pb-24">
+    <div className="max-w-md mx-auto p-4 space-y-4 pb-24 animate-fade-in">
       {/* Grade Selector Strip */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between px-1">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-cyan-400 flex items-center gap-1">
-            <Cpu className="w-3.5 h-3.5" /> Выбери свой класс:
+          <span className="text-[11px] font-black uppercase tracking-wider text-cyan-400 flex items-center gap-1">
+            <Cpu className="w-3.5 h-3.5" /> Твой школьный класс:
           </span>
           <span className="text-[10px] font-bold text-slate-400">
-            Активен: <strong className="text-cyan-300">{profile.selected_grade}-й класс</strong>
+            Выбран: <strong className="text-cyan-300 font-black">{profile.selected_grade}-й класс</strong>
           </span>
         </div>
+
         <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar py-0.5">
           {grades.map((grade) => {
             const isSelected = grade === profile.selected_grade;
@@ -46,10 +50,10 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
               <button
                 key={grade}
                 onClick={() => onSelectGrade(grade)}
-                className={`min-w-[36px] h-9 rounded-xl text-xs font-black transition-all active:scale-95 flex items-center justify-center ${
+                className={`min-w-[38px] h-10 rounded-2xl text-xs font-black transition-all active:scale-95 flex items-center justify-center ${
                   isSelected
-                    ? 'bg-gradient-to-tr from-cyan-500 to-blue-600 text-slate-950 font-black shadow-lg shadow-cyan-500/30 scale-105 border border-cyan-300'
-                    : 'bg-slate-900/80 hover:bg-slate-800 text-slate-400 border border-slate-800'
+                    ? 'bg-gradient-to-tr from-cyan-400 via-cyan-500 to-blue-600 text-slate-950 font-black shadow-lg shadow-cyan-500/30 scale-105 border border-cyan-200'
+                    : 'bg-slate-900/90 hover:bg-slate-800 text-slate-400 border border-slate-800'
                 }`}
               >
                 {grade}
@@ -60,16 +64,16 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       </div>
 
       {/* Companion Drone Tip Banner */}
-      <div className="p-3 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-indigo-950/40 border border-cyan-500/20 flex items-center gap-3 shadow-md">
-        <div className="w-10 h-10 rounded-xl bg-slate-800 border border-cyan-500/30 flex items-center justify-center text-2xl shrink-0">
+      <div className="p-3.5 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-indigo-950/40 border border-cyan-500/30 flex items-center gap-3.5 shadow-lg">
+        <div className="w-11 h-11 rounded-2xl bg-slate-800 border border-cyan-500/40 flex items-center justify-center text-2xl shrink-0 shadow-inner">
           {currentDrone.emoji}
         </div>
         <div className="flex-1">
-          <div className="text-[11px] font-bold text-cyan-300 flex items-center gap-1">
+          <div className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
             <span>{currentDrone.name}</span>
-            <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">Дрон-Спутник</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-cyan-950 text-cyan-400 border border-cyan-800 font-bold">Дрон-Спутник</span>
           </div>
-          <p className="text-[10px] text-slate-300 leading-tight mt-0.5">
+          <p className="text-[11px] text-slate-300 leading-tight mt-0.5">
             {currentDrone.bonus_text}
           </p>
         </div>
@@ -85,7 +89,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
               onClick={() => setSelectedSubjectId(subject.id)}
               className={`flex items-center gap-2 px-3.5 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all active:scale-95 ${
                 isActive
-                  ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-500/25 border border-cyan-400/40'
+                  ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-500/25 border border-cyan-400/50'
                   : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800'
               }`}
             >
@@ -97,7 +101,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       </div>
 
       {/* Subject Hero Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950/60 to-slate-900 border border-cyan-500/20 p-4 shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950/60 to-slate-900 border border-cyan-500/25 p-4 shadow-xl">
         <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
         <div className="flex items-start justify-between">
           <div>
@@ -123,23 +127,31 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
             Доступные модули & Вирусы
           </h3>
           <span className="text-[10px] font-bold text-slate-400">
-            {displayTopics.length} модуля
+            {sortedTopics.length} модуля
           </span>
         </div>
 
-        {displayTopics.map((topic) => {
+        {sortedTopics.map((topic) => {
           const isBossDefeated = profile.defeated_bosses.includes(topic.id);
           const isSecretUnlocked = profile.unlocked_secrets.includes(topic.id);
+          const isGradeMatch = topic.grade_level === profile.selected_grade;
 
           return (
             <div
               key={topic.id}
-              className="glass-panel rounded-3xl border border-slate-800 p-4 hover:border-cyan-500/40 transition-all shadow-md group relative overflow-hidden bg-slate-900/90"
+              className={`glass-panel rounded-3xl border p-4 transition-all shadow-md group relative overflow-hidden bg-slate-900/90 ${
+                isGradeMatch ? 'border-cyan-500/50 shadow-cyan-500/5' : 'border-slate-800 hover:border-cyan-500/30'
+              }`}
             >
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-slate-800 text-cyan-300 border border-slate-700">
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border flex items-center gap-1 ${
+                      isGradeMatch 
+                        ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' 
+                        : 'bg-slate-800 text-slate-400 border-slate-700'
+                    }`}>
+                      {isGradeMatch && <Star className="w-2.5 h-2.5 fill-cyan-300" />}
                       {topic.grade_level} класс
                     </span>
                     <span className="text-[10px] font-semibold text-slate-400 flex items-center gap-1">
@@ -200,9 +212,9 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
 
                 <button
                   onClick={() => onSelectTopic(topic)}
-                  className="flex-1 ml-auto flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 text-white text-xs font-black shadow-md shadow-cyan-600/20 transition active:scale-95"
+                  className="flex-1 ml-auto flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 text-white text-xs font-black shadow-md shadow-cyan-600/20 transition active:scale-95"
                 >
-                  <span>{isBossDefeated ? 'Перезапустить модуль' : 'Запустить протокол'}</span>
+                  <span>{isBossDefeated ? 'Пройти повторно' : 'Запустить модуль'}</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
